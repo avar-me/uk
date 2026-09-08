@@ -1,0 +1,12 @@
+{
+  "id": "en",
+  "target": "en",
+  "html_lang": "en",
+  "accent": "#1e4d8c",
+  "label_av": "Avar",
+  "label_xx": "Eng",
+  "title_av_xx": "Avar–English dictionary",
+  "title_xx_av": "English–Avar dictionary",
+  "description": "Avar–English and English–Avar dictionary",
+  "header_tag": "Avar dictionary"
+}

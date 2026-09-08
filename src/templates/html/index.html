@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="__HTML_LANG__">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="description" content="__SITE_DESC__ — __SITE_HOST__">
+    <meta name="keywords" content="аварский язык, словарь, перевод, Дагестан">
+    <meta name="author" content="__SITE_HOST__">
+
+    <!-- Open Graph / Social Media -->
+    <meta property="og:type" content="website">
+    <meta property="og:title" content="__SITE_TITLE__">
+    <meta property="og:description" content="__SITE_DESC__ — __SITE_HOST__">
+    <meta property="og:url" content="https://__SITE_HOST__">
+
+    <title>__SITE_TITLE__ — __SITE_HOST__</title>
+
+    <!-- Google Fonts (из index.avar.me) -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Literata:ital,opsz,wght@0,7..72,400;0,7..72,600;1,7..72,400&family=Onest:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+    <link rel="stylesheet" href="styles.css?v=__ASSET_VERSION__">
+    <link rel="stylesheet" href="theme.css?v=__ASSET_VERSION__">
+
+    <link rel="icon" type="image/x-icon" href="favicon.ico">
+    <link rel="icon" type="image/png" sizes="32x32" href="favicon-32.png">
+    <link rel="apple-touch-icon" sizes="192x192" href="favicon-192.png">
+
+    <!-- Google Analytics (общий счётчик avar.me / UA-79014041-1) -->
+    <script>
+      (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+      (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+      m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+      })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+      ga('create', 'UA-79014041-1', 'auto');
+      ga('send', 'pageview');
+    </script>
+
+    <!-- Preload critical resources -->
+    <link rel="preload" href="data/__DICT_AV__/index.words.txt?v=__ASSET_VERSION__" as="fetch" crossorigin>
+    <link rel="preload" href="data/__DICT_AV__/browse.json?v=__ASSET_VERSION__" as="fetch" crossorigin>
+</head>
+<body>
+    <!-- Фоновый паттерн (из index.avar.me) -->
+    <div class="bg-pattern" aria-hidden="true"></div>
+
+    <div class="container">
+        <!-- Topbar: языки, приложения, канал и бот -->
+        <div class="topbar">
+            <nav class="topbar-langs" aria-label="Языковые версии">
+                <a href="https://ru.avar.me" data-lang="ru">ru</a>
+                <span class="topbar-sep" aria-hidden="true">·</span>
+                <a href="https://en.avar.me" data-lang="en">en</a>
+                <span class="topbar-sep" aria-hidden="true">·</span>
+                <a href="https://de.avar.me" data-lang="de">de</a>
+                <span class="topbar-sep" aria-hidden="true">·</span>
+                <a href="https://fr.avar.me" data-lang="fr">fr</a>
+                <span class="topbar-sep" aria-hidden="true">·</span>
+                <a href="https://tr.avar.me" data-lang="tr">tr</a>
+                <span class="topbar-sep" aria-hidden="true">·</span>
+                <a href="https://uk.avar.me" data-lang="uk">uk</a>
+                <span class="topbar-sep" aria-hidden="true">·</span>
+                <a href="https://be.avar.me" data-lang="be">be</a>
+                <a class="topbar-old" href="https://old.avar.me">old</a>
+            </nav>
+            <nav class="topbar-apps" aria-label="Приложения и Telegram">
+                <a class="topbar-icon" href="https://apps.apple.com/app/id6782280983" target="_blank" rel="noopener" title="App Store" aria-label="App Store">
+                    <svg viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M16.12 12.73c.03 3.18 2.79 4.24 2.82 4.25-.02.08-.44 1.51-1.45 2.99-.87 1.28-1.78 2.55-3.2 2.58-1.41.02-1.86-.83-3.47-.83-1.6 0-2.1.81-3.43.86-1.38.05-2.43-1.39-3.31-2.66C2.3 17.32.93 12.54 2.78 9.31c.92-1.6 2.56-2.61 4.34-2.64 1.35-.03 2.63.91 3.47.91.83 0 2.38-1.13 4.01-.96.68.03 2.6.28 3.83 2.08-.1.06-2.29 1.34-2.26 4.03zM13.76 5.48c.73-.88 1.22-2.11 1.09-3.33-1.05.04-2.32.7-3.07 1.58-.68.78-1.27 2.04-1.11 3.24 1.17.09 2.37-.6 3.09-1.49z"/></svg>
+                </a>
+                <a class="topbar-icon" href="https://play.google.com/store/apps/details?id=me.avar.dictionary" target="_blank" rel="noopener" title="Google Play" aria-label="Google Play">
+                    <svg viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M17.6 9.48 19.44 6.3a.54.54 0 0 0-.26-.85.54.54 0 0 0-.83.26l-1.88 3.24a11.4 11.4 0 0 0-8.94 0L5.65 5.71a.54.54 0 0 0-.83-.26.54.54 0 0 0-.26.85l1.84 3.18C4.16 11.25 3 13.47 3 16h18c0-2.53-1.16-4.75-3.4-6.52M7.5 14.25a1 1 0 1 1 0-2 1 1 0 0 1 0 2m9 0a1 1 0 1 1 0-2 1 1 0 0 1 0 2"/></svg>
+                </a>
+                <a class="topbar-icon" href="https://t.me/avarlangme" target="_blank" rel="noopener" title="Telegram-канал" aria-label="Telegram-канал">
+                    <svg viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2m4.64 6.8-1.6 7.55c-.12.54-.44.67-.88.42l-2.44-1.8-1.18 1.13c-.13.13-.24.24-.49.24l.18-2.48 4.52-4.08c.2-.17-.04-.27-.3-.1l-5.59 3.52-2.41-.75c-.52-.16-.53-.52.11-.77l9.41-3.63c.44-.16.82.1.67.75"/></svg>
+                </a>
+                <a class="topbar-icon" href="https://t.me/avar_me_bot" target="_blank" rel="noopener" title="Telegram-бот" aria-label="Telegram-бот">
+                    <svg viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M12 3a1 1 0 0 1 1 1v1.07A7 7 0 0 1 19 12v5a3 3 0 0 1-3 3h-1.17A3 3 0 0 1 12 22a3 3 0 0 1-2.83-2H8a3 3 0 0 1-3-3v-5a7 7 0 0 1 6-6.93V4a1 1 0 0 1 1-1m-3.5 10.25a1.25 1.25 0 1 0 0 2.5 1.25 1.25 0 0 0 0-2.5m7 0a1.25 1.25 0 1 0 0 2.5 1.25 1.25 0 0 0 0-2.5"/></svg>
+                </a>
+            </nav>
+        </div>
+
+        <!-- Header -->
+        <header class="header">
+            <p class="header-tag">__SITE_TAG__ <a href="https://avar.me" target="_blank" rel="noopener">avar.me</a></p>
+            <div class="dict-toggle">
+                <button class="toggle-btn active" data-type="__DICT_AV__">__LABEL_AV_XX__</button>
+                <button class="toggle-btn" data-type="__DICT_XX__">__LABEL_XX_AV__</button>
+            </div>
+            <p class="header-link"><a class="phrases-link" href="phrases.html">Поиск по фразам →</a></p>
+        </header>
+
+        <!-- Search Section -->
+        <div class="search-section">
+            <div class="search-container">
+                <div class="search-input-wrapper">
+                    <svg class="search-icon" width="20" height="20" viewBox="0 0 20 20" fill="none">
+                        <path d="M9 17A8 8 0 1 0 9 1a8 8 0 0 0 0 16zM19 19l-4.35-4.35" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                    </svg>
+                    <input
+                        type="text"
+                        id="searchInput"
+                        class="search-input"
+                        placeholder="Введите слово для поиска…"
+                        autocomplete="off"
+                        autocorrect="off"
+                        autocapitalize="off"
+                        spellcheck="false"
+                    >
+                    <button id="clearBtn" class="clear-btn" aria-label="Очистить">
+                        <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+                            <path d="M12 4L4 12M4 4l8 8" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+                        </svg>
+                    </button>
+                </div>
+
+                <!-- Suggestions Dropdown -->
+                <div id="suggestions" class="suggestions"></div>
+            </div>
+
+            <!-- Search Stats -->
+            <div id="searchStats" class="search-stats"></div>
+        </div>
+
+        <!-- Results Section -->
+        <div id="results" class="results-section"></div>
+
+        <!-- Home: random words with glosses (как на avar.me) -->
+        <div id="randomWordsSection" class="home-samples-section">
+            <div id="homeSamples"></div>
+        </div>
+
+        <!-- Loading Indicator -->
+        <div id="loading" class="loading">
+            <div class="spinner"></div>
+            <p>Загрузка…</p>
+        </div>
+
+        <!-- Error Message -->
+        <div id="error" class="error-message"></div>
+
+        <!-- Footer -->
+        <footer class="footer">
+            <p>
+                <a class="phrases-link" href="phrases.html">Поиск по фразам →</a>
+            </p>
+            <p>
+                Проект <a href="https://avar.me" target="_blank" rel="noopener">avar.me</a>
+                · <a href="mailto:admin@avar.me">admin@avar.me</a>
+            </p>
+            <p>
+                <a href="https://github.com/avar-me" target="_blank" rel="noopener">github.com/avar-me</a>
+            </p>
+        </footer>
+    </div>
+
+    <script>window.__DICT_ASSET_V__ = "__ASSET_VERSION__"; window.__SITE__ = __SITE_JSON__;</script>
+    <script src="app.js?v=__ASSET_VERSION__" charset="utf-8"></script>
+</body>
+</html>

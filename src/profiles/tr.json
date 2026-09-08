@@ -1,0 +1,12 @@
+{
+  "id": "tr",
+  "target": "tr",
+  "html_lang": "tr",
+  "accent": "#b4232c",
+  "label_av": "Avar",
+  "label_xx": "Türk",
+  "title_av_xx": "Avarca–Türkçe sözlük",
+  "title_xx_av": "Türkçe–Avarca sözlük",
+  "description": "Avarca–Türkçe ve Türkçe–Avarca sözlük",
+  "header_tag": "Avar sözlüğü"
+}

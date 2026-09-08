@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="av">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <meta name="description" content="__SITE_DESC__">
+    
+    <title>__SITE_TITLE__</title>
+    
+    <!-- Telegram Web App SDK -->
+    <script src="https://telegram.org/js/telegram-web-app.js"></script>
+    
+    <link rel="stylesheet" href="styles.css?v=202604131230">
+</head>
+<body>
+    <div class="container">
+        <!-- Header -->
+        <header class="header">
+            <div class="header-top">
+                <div class="header-title-section">
+                    <h1 class="title">__SITE_TITLE__</h1>
+                </div>
+                
+                <!-- Home Button -->
+                <button id="homeBtn" class="home-btn" aria-label="На главную" title="На главную">
+                    <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
+                        <path d="M10 3L2 10h2v7h4v-5h4v5h4v-7h2L10 3z" fill="currentColor"/>
+                    </svg>
+                    <span class="home-btn-text">На главную</span>
+                </button>
+            </div>
+            
+        </header>
+
+        <!-- Search Section -->
+        <div class="search-section">
+            <div class="search-container">
+                <div class="search-input-wrapper">
+                    <svg class="search-icon" width="20" height="20" viewBox="0 0 20 20" fill="none">
+                        <path d="M9 17A8 8 0 1 0 9 1a8 8 0 0 0 0 16zM19 19l-4.35-4.35" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                    </svg>
+                    <input 
+                        type="text" 
+                        id="searchInput" 
+                        class="search-input" 
+                        placeholder="Введите слово..."
+                        autocomplete="off"
+                        autocorrect="off"
+                        autocapitalize="off"
+                        spellcheck="false"
+                    >
+                    <button id="clearBtn" class="clear-btn" aria-label="Очистить">
+                        <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+                            <path d="M12 4L4 12M4 4l8 8" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+                        </svg>
+                    </button>
+                </div>
+                
+                <!-- Suggestions Dropdown -->
+                <div id="suggestions" class="suggestions"></div>
+            </div>
+            
+            <!-- Search Stats -->
+            <div id="searchStats" class="search-stats"></div>
+        </div>
+
+        <!-- Results Section -->
+        <div id="results" class="results-section"></div>
+
+        <!-- Random Words Section (shown on start) -->
+        <div id="randomWordsSection" class="random-words-section">
+            <h2 class="random-words-title">Случайные слова</h2>
+            <div id="randomWords" class="random-words-grid"></div>
+        </div>
+
+        <!-- Loading Indicator -->
+        <div id="loading" class="loading">
+            <div class="spinner"></div>
+            <p>Загрузка...</p>
+        </div>
+
+        <!-- Error Message -->
+        <div id="error" class="error-message"></div>
+    </div>
+
+    <script>window.__SITE__ = __SITE_JSON__;</script>
+    <script src="app.js?v=202604131200"></script>
+</body>
+</html>

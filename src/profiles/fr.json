@@ -1,0 +1,12 @@
+{
+  "id": "fr",
+  "target": "fr",
+  "html_lang": "fr",
+  "accent": "#2c4a8c",
+  "label_av": "Avar",
+  "label_xx": "Fr.",
+  "title_av_xx": "Dictionnaire avar–français",
+  "title_xx_av": "Dictionnaire français–avar",
+  "description": "Dictionnaire avar–français et français–avar",
+  "header_tag": "Dictionnaire avar"
+}

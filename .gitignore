@@ -1,0 +1,19 @@
+__pycache__/
+*.pyc
+.venv/
+.env
+.DS_Store
+node_modules/
+
+# Артефакт сборки — генерируется Actions, в репозиторий не коммитим
+docs/
+
+# Локальные копии данных — данные живут в sources.avar.me
+av-ru.jsonl
+*.jsonl
+
+# Локальный кэш
+.cache/
+
+# Локальные настройки Claude Code / Cursor / других ассистентов
+.claude/settings.local.json
