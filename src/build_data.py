@@ -154,6 +154,7 @@ _RELATION_FIELDS: list[tuple[str, str]] = [
 def _sense_to_result(
     sense: dict,
     entry_labels: list[str],
+    lang: str = "ru",
 ) -> dict:
     labels = _filter_display_labels(list(entry_labels))
     for lab in _filter_display_labels(sense.get("labels") or []):
@@ -179,7 +180,7 @@ def _sense_to_result(
     examples_out: list[dict] = []
     for ex in sense.get("examples") or []:
         av = (ex.get("av") or "").strip()
-        ru = (ex.get("ru") or "").strip()
+        ru = (ex.get(lang) or ex.get("ru") or "").strip()
         note_parts: list[str] = []
         for lab in ex.get("labels") or []:
             if lab and str(lab).strip() and str(lab).strip() not in note_parts:
@@ -220,7 +221,7 @@ def _sense_to_result(
     return out
 
 
-def convert_entry(raw: dict) -> dict:
+def convert_entry(raw: dict, lang: str = "ru") -> dict:
     """Одна строка dictionary.jsonl → формат фронтенда (как в legacy av-ru JSONL)."""
     word = (raw.get("word") or "").strip()
     forms = [str(f).strip() for f in (raw.get("forms") or []) if f and str(f).strip()]
@@ -234,7 +235,7 @@ def convert_entry(raw: dict) -> dict:
     for sense in translations:
         if not isinstance(sense, dict):
             continue
-        results.append(_sense_to_result(sense, entry_labels))
+        results.append(_sense_to_result(sense, entry_labels, lang))
 
     if not results:
         # Статья только со см. или пустые значения
@@ -346,7 +347,7 @@ def merge_site_entries(a: dict, b: dict) -> dict:
     return out
 
 
-def load_dictionary(path: Path) -> tuple[dict[str, dict], dict[str, str]]:
+def load_dictionary(path: Path, lang: str = "ru") -> tuple[dict[str, dict], dict[str, str]]:
     entries: dict[str, dict] = {}
     form_to_word: dict[str, str] = {}
     duplicates: dict[str, list[str]] = defaultdict(list)
@@ -362,7 +363,7 @@ def load_dictionary(path: Path) -> tuple[dict[str, dict], dict[str, str]]:
             except json.JSONDecodeError as e:
                 print(f"  ОШИБКА JSON строка {line_num}: {e}", file=sys.stderr)
                 continue
-            conv = convert_entry(raw)
+            conv = convert_entry(raw, lang)
             w = conv["word"]
             if not w:
                 continue
@@ -686,11 +687,11 @@ def build_phrases(dictionary_path: Path, direction: str, output_dir: Path) -> No
     print(f"Фразы ({direction}): {len(phrases)} → {output_dir} ({len(chunk_info)} чанков)")
 
 
-def build_av_ru(dictionary_path: Path, output_dir: Path) -> bool:
+def build_av_ru(dictionary_path: Path, output_dir: Path, lang: str = "ru") -> bool:
     print("=" * 60)
     print(f"Сборка {output_dir.name} → {output_dir}")
     print("=" * 60)
-    entries, form_map = load_dictionary(dictionary_path)
+    entries, form_map = load_dictionary(dictionary_path, lang)
     if not entries:
         print("Нет записей.", file=sys.stderr)
         return False
@@ -714,13 +715,14 @@ def main() -> None:
 
     docs_root = Path(os.environ.get("DOCS_ROOT", DEFAULT_DOCS)).resolve()
     dict_name = os.environ.get("DICT_NAME", "av-ru")
+    lang, _ = _direction_parts(dict_name)
     targets = [
         docs_root / "data" / dict_name,
         docs_root / "tma" / "data" / dict_name,
     ]
     ok = 0
     for out in targets:
-        if build_av_ru(dict_path, out):
+        if build_av_ru(dict_path, out, lang):
             ok += 1
     if ok != len(targets):
         sys.exit(1)
