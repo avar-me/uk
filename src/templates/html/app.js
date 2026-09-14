@@ -978,13 +978,20 @@ async function switchDictType(newType) {
         // Update state
         state.currentDictType = newType;
 
-        // Load new index and manifest
-        state.wordsIndex = await loadWordsIndex(newType);
-        state.headwordsIndex = await loadHeadwordsIndex(newType);
-        state.headwordsSet = new Set(state.headwordsIndex);
-        state.formToHeadword = await loadFormToHeadword(newType);
-        state.browse = await loadBrowse(newType);
-        state.manifest = await loadManifest(newType);
+        // Load new index and manifest — параллельно, см. init()
+        const [wordsIndex, headwordsIndex, formToHeadword, browse, manifest] = await Promise.all([
+            loadWordsIndex(newType),
+            loadHeadwordsIndex(newType),
+            loadFormToHeadword(newType),
+            loadBrowse(newType),
+            loadManifest(newType),
+        ]);
+        state.wordsIndex = wordsIndex;
+        state.headwordsIndex = headwordsIndex;
+        state.headwordsSet = new Set(headwordsIndex);
+        state.formToHeadword = formToHeadword;
+        state.browse = browse;
+        state.manifest = manifest;
 
         // Clear cache
         state.chunkCache.clear();
@@ -1147,13 +1154,22 @@ async function init() {
             state.currentDictType = dictParam;
         }
 
-        // Load initial data
-        state.wordsIndex = await loadWordsIndex(state.currentDictType);
-        state.headwordsIndex = await loadHeadwordsIndex(state.currentDictType);
-        state.headwordsSet = new Set(state.headwordsIndex);
-        state.formToHeadword = await loadFormToHeadword(state.currentDictType);
-        state.browse = await loadBrowse(state.currentDictType);
-        state.manifest = await loadManifest(state.currentDictType);
+        // Load initial data — параллельно, а не по очереди (RTT одного запроса
+        // вместо суммы пяти).
+        const initDictType = state.currentDictType;
+        const [wordsIndex, headwordsIndex, formToHeadword, browse, manifest] = await Promise.all([
+            loadWordsIndex(initDictType),
+            loadHeadwordsIndex(initDictType),
+            loadFormToHeadword(initDictType),
+            loadBrowse(initDictType),
+            loadManifest(initDictType),
+        ]);
+        state.wordsIndex = wordsIndex;
+        state.headwordsIndex = headwordsIndex;
+        state.headwordsSet = new Set(headwordsIndex);
+        state.formToHeadword = formToHeadword;
+        state.browse = browse;
+        state.manifest = manifest;
 
         // Mark initial active toggle button
         document.querySelectorAll('.toggle-btn').forEach(btn => {

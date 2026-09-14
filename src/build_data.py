@@ -420,50 +420,70 @@ def get_prefix(word: str, length: int = 2) -> str:
     return normalized[: min(length, len(normalized))]
 
 
+def _group_data_for(
+    words: list[str], entries: dict[str, dict], form_to_word_map: dict[str, str]
+) -> dict[str, dict]:
+    data: dict[str, dict] = {}
+    for w in words:
+        if w in entries:
+            data[w] = entries[w]
+        elif w in form_to_word_map:
+            main_word = form_to_word_map[w]
+            if main_word in entries:
+                data[w] = entries[main_word]
+    return data
+
+
+def _split_group(
+    prefix: str,
+    prefix_words: list[str],
+    entries: dict[str, dict],
+    form_to_word_map: dict[str, str],
+    chunks: dict[str, dict],
+    depth: int,
+) -> None:
+    """Кладёт группу в chunks под именем prefix либо рекурсивно дробит её
+    удлинением префикса, пока размер/число слов не впишутся в лимиты.
+    Группу из одного слова дальше не дробим — дробить нечем."""
+    group_data = _group_data_for(prefix_words, entries, form_to_word_map)
+    group_json = json.dumps(group_data, ensure_ascii=False)
+    group_size = len(group_json.encode("utf-8"))
+
+    over_limit = group_size > MAX_CHUNK_SIZE or len(prefix_words) > MAX_WORDS_PER_CHUNK
+    if over_limit and len(prefix_words) > 1:
+        next_depth = depth + 1
+        sub_groups: dict[str, list[str]] = defaultdict(list)
+        for word in prefix_words:
+            sub_groups[get_prefix(word, next_depth)].append(word)
+        if len(sub_groups) > 1:
+            print(f"  {prefix}: {len(prefix_words)} слов, {group_size} байт — дробим на {next_depth} симв.")
+            for sub_prefix, sub_words in sorted(sub_groups.items()):
+                chunk_name = sub_prefix if sub_prefix else prefix
+                _split_group(chunk_name, sub_words, entries, form_to_word_map, chunks, next_depth)
+            return
+        # Удлинение префикса не разделило группу (слова совпадают дальше
+        # текущей глубины) — пробуем ещё глубже, до полного слова включительно.
+        if next_depth < 64:
+            _split_group(prefix, prefix_words, entries, form_to_word_map, chunks, next_depth)
+            return
+
+    chunks[prefix] = group_data
+    print(f"  {prefix}: {len(prefix_words)} слов, {group_size} байт")
+
+
 def split_into_chunks(
     entries: dict[str, dict],
     words: list[str],
     form_to_word_map: dict[str, str],
 ) -> dict[str, dict]:
-    chunks: dict[str, dict] = defaultdict(dict)
+    chunks: dict[str, dict] = {}
     prefix_groups: dict[str, list[str]] = defaultdict(list)
     for word in words:
         prefix_groups[get_prefix(word, 2)].append(word)
 
     print(f"Групп по 2-символьному префиксу: {len(prefix_groups)}")
     for prefix, prefix_words in sorted(prefix_groups.items()):
-        group_data: dict[str, dict] = {}
-        for w in prefix_words:
-            if w in entries:
-                group_data[w] = entries[w]
-            elif w in form_to_word_map:
-                main_word = form_to_word_map[w]
-                if main_word in entries:
-                    group_data[w] = entries[main_word]
-        group_json = json.dumps(group_data, ensure_ascii=False)
-        group_size = len(group_json.encode("utf-8"))
-
-        if group_size > MAX_CHUNK_SIZE or len(prefix_words) > MAX_WORDS_PER_CHUNK:
-            print(f"  {prefix}: {len(prefix_words)} слов, {group_size} байт — дробим на 3 символа")
-            sub_groups: dict[str, list[str]] = defaultdict(list)
-            for word in prefix_words:
-                sub_groups[get_prefix(word, 3)].append(word)
-            for sub_prefix, sub_words in sorted(sub_groups.items()):
-                chunk_name = sub_prefix if sub_prefix else prefix
-                chunk_data: dict[str, dict] = {}
-                for w in sub_words:
-                    if w in entries:
-                        chunk_data[w] = entries[w]
-                    elif w in form_to_word_map:
-                        mw = form_to_word_map[w]
-                        if mw in entries:
-                            chunk_data[w] = entries[mw]
-                chunks[chunk_name] = chunk_data
-                cj = json.dumps(chunks[chunk_name], ensure_ascii=False)
-                print(f"    {chunk_name}: {len(sub_words)} слов, {len(cj.encode('utf-8'))} байт")
-        else:
-            chunks[prefix] = group_data
-            print(f"  {prefix}: {len(prefix_words)} слов, {group_size} байт")
+        _split_group(prefix, prefix_words, entries, form_to_word_map, chunks, depth=2)
     return chunks
 
 
@@ -538,7 +558,7 @@ def write_chunks(chunks: dict[str, dict], output_dir: Path) -> list[dict]:
         safe = _safe_chunk_filename(chunk_name)
         chunk_file = chunks_dir / f"{safe}.json"
         with open(chunk_file, "w", encoding="utf-8") as f:
-            json.dump(chunk_data, f, ensure_ascii=False, indent=2)
+            json.dump(chunk_data, f, ensure_ascii=False, separators=(",", ":"))
         file_size = chunk_file.stat().st_size
         with open(chunk_file, "rb") as f:
             file_hash = hashlib.md5(f.read()).hexdigest()[:8]

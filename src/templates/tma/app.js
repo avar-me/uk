@@ -687,9 +687,11 @@ async function switchDictType(newType) {
         
         state.currentDictType = newType;
         
-        state.wordsIndex = await loadWordsIndex(newType);
-        state.manifest = await loadManifest(newType);
-        
+        [state.wordsIndex, state.manifest] = await Promise.all([
+            loadWordsIndex(newType),
+            loadManifest(newType),
+        ]);
+
         state.chunkCache.clear();
         renderSuggestions([]);
         updateSearchStats('', 0);
@@ -851,9 +853,11 @@ async function init() {
         
         showLoading(true);
         
-        state.wordsIndex = await loadWordsIndex(state.currentDictType);
-        state.manifest = await loadManifest(state.currentDictType);
-        
+        [state.wordsIndex, state.manifest] = await Promise.all([
+            loadWordsIndex(state.currentDictType),
+            loadManifest(state.currentDictType),
+        ]);
+
         initEventListeners();
         
         showLoading(false);
