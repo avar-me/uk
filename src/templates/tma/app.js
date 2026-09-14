@@ -78,12 +78,20 @@ const CONFIG = {
     DEFAULT_DICT_TYPE: (typeof window !== 'undefined' && window.__SITE__ && window.__SITE__.dicts && window.__SITE__.dicts[0].id) || 'av-ru'
 };
 
-const SITE_UI = (typeof window !== 'undefined' && window.__SITE__ && window.__SITE__.ui) || {
+const DEFAULT_UI = {
     forms: 'Формы',
     byGender: 'По родам',
     seeAlso: 'См. также',
     exclamation: 'Восклицательная форма',
     genderHints: ['м. р.', 'ж. р.', 'ср. р.'],
+};
+
+// window.__SITE__ приходит из HTML, закэшированного на CDN отдельно от app.js —
+// при устаревшем HTML (без части полей SITE.ui) мерджим с дефолтами, а не
+// доверяем структуре целиком, иначе скрипт падает на старте.
+const SITE_UI = {
+    ...DEFAULT_UI,
+    ...((typeof window !== 'undefined' && window.__SITE__ && window.__SITE__.ui) || {}),
 };
 
 // ============================================================================

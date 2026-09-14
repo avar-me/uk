@@ -7,9 +7,32 @@
 // CONFIGURATION
 // ============================================================================
 
+const DEFAULT_UI = {
+    forms: 'Формы',
+    byGender: 'По родам',
+    seeAlso: 'См. также',
+    exclamation: 'Восклицательная форма',
+    genderHints: ['м. р.', 'ж. р.', 'ср. р.'],
+    searchPlaceholder: 'Введите слово для поиска…',
+    clear: 'Очистить',
+    loading: 'Загрузка…',
+    wordCol: 'Слово',
+    translationCol: 'Перевод',
+    noResults: 'Ничего не найдено',
+    tryDifferentQuery: 'Попробуйте изменить запрос',
+    noResultsForTpl: 'Ничего не найдено для "{query}"',
+    wordsStartingWithMoreTpl: 'Слова на «{query}» (показаны первые {n})',
+    wordsStartingWithTpl: 'Слова на «{query}» — {n}',
+};
+
 function getSite() {
     const s = typeof window !== 'undefined' ? window.__SITE__ : null;
-    if (s && Array.isArray(s.dicts) && s.dicts.length >= 2) return s;
+    // window.__SITE__ приходит из HTML, закэшированного на CDN отдельно от app.js —
+    // при устаревшем HTML (без части полей SITE.ui) мерджим с дефолтами, а не
+    // доверяем структуре целиком, иначе скрипт падает на старте.
+    if (s && Array.isArray(s.dicts) && s.dicts.length >= 2) {
+        return { ...s, ui: { ...DEFAULT_UI, ...(s.ui || {}) } };
+    }
     return {
         id: 'ru',
         host: 'dev.avar.me',
@@ -17,23 +40,7 @@ function getSite() {
             { id: 'av-ru', label: 'Авар → Рус', title: 'Аварско-русский словарь — dev.avar.me', shortAv: 'Авар', shortXx: 'Рус', avFirst: true },
             { id: 'ru-av', label: 'Рус → Авар', title: 'Русско-аварский словарь — dev.avar.me', shortAv: 'Авар', shortXx: 'Рус', avFirst: false },
         ],
-        ui: {
-            forms: 'Формы',
-            byGender: 'По родам',
-            seeAlso: 'См. также',
-            exclamation: 'Восклицательная форма',
-            genderHints: ['м. р.', 'ж. р.', 'ср. р.'],
-            searchPlaceholder: 'Введите слово для поиска…',
-            clear: 'Очистить',
-            loading: 'Загрузка…',
-            wordCol: 'Слово',
-            translationCol: 'Перевод',
-            noResults: 'Ничего не найдено',
-            tryDifferentQuery: 'Попробуйте изменить запрос',
-            noResultsForTpl: 'Ничего не найдено для "{query}"',
-            wordsStartingWithMoreTpl: 'Слова на «{query}» (показаны первые {n})',
-            wordsStartingWithTpl: 'Слова на «{query}» — {n}',
-        },
+        ui: DEFAULT_UI,
     };
 }
 

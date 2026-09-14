@@ -3,9 +3,23 @@
  * Полнотекстовый поиск по examples и sense.text обоих словарей (av-ru, ru-av).
  */
 
+const DEFAULT_UI = {
+    wordCol: 'Слово',
+    noResults: 'Ничего не найдено',
+    openArticleTpl: 'Открыть статью «{word}»',
+    foundMoreTpl: 'Найдено {n} · показаны первые {max}',
+    foundTpl: 'Найдено {n}',
+    enterMoreCharsTpl: 'Введите ещё {n} симв.',
+};
+
 function getSite() {
     const s = typeof window !== 'undefined' ? window.__SITE__ : null;
-    if (s && Array.isArray(s.dicts) && s.dicts.length >= 2) return s;
+    // window.__SITE__ приходит из HTML, закэшированного на CDN отдельно от phrases.js —
+    // при устаревшем HTML (без части полей SITE.ui) мерджим с дефолтами, а не
+    // доверяем структуре целиком, иначе скрипт падает на старте.
+    if (s && Array.isArray(s.dicts) && s.dicts.length >= 2) {
+        return { ...s, ui: { ...DEFAULT_UI, ...(s.ui || {}) } };
+    }
     return {
         id: 'ru',
         host: 'dev.avar.me',
@@ -13,14 +27,7 @@ function getSite() {
             { id: 'av-ru', label: 'Авар → Рус', shortAv: 'Авар', shortXx: 'Рус', avFirst: true },
             { id: 'ru-av', label: 'Рус → Авар', shortAv: 'Авар', shortXx: 'Рус', avFirst: false },
         ],
-        ui: {
-            wordCol: 'Слово',
-            noResults: 'Ничего не найдено',
-            openArticleTpl: 'Открыть статью «{word}»',
-            foundMoreTpl: 'Найдено {n} · показаны первые {max}',
-            foundTpl: 'Найдено {n}',
-            enterMoreCharsTpl: 'Введите ещё {n} симв.',
-        },
+        ui: DEFAULT_UI,
     };
 }
 
