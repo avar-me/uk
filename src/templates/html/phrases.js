@@ -13,10 +13,22 @@ function getSite() {
             { id: 'av-ru', label: 'Авар → Рус', shortAv: 'Авар', shortXx: 'Рус', avFirst: true },
             { id: 'ru-av', label: 'Рус → Авар', shortAv: 'Авар', shortXx: 'Рус', avFirst: false },
         ],
+        ui: {
+            wordCol: 'Слово',
+            noResults: 'Ничего не найдено',
+            openArticleTpl: 'Открыть статью «{word}»',
+            foundMoreTpl: 'Найдено {n} · показаны первые {max}',
+            foundTpl: 'Найдено {n}',
+            enterMoreCharsTpl: 'Введите ещё {n} симв.',
+        },
     };
 }
 
 const SITE = getSite();
+
+function formatTpl(tpl, vars) {
+    return tpl.replace(/\{(\w+)\}/g, (m, key) => (key in vars ? vars[key] : m));
+}
 
 const CONFIG = {
     MIN_QUERY_LEN: 2,
@@ -122,7 +134,7 @@ function wordLink(word, dict) {
 }
 
 function renderRows(items, dict, queryNorm, reversed) {
-    if (!items.length) return '<p class="phrase-empty">Ничего не найдено</p>';
+    if (!items.length) return `<p class="phrase-empty">${escapeHtml(SITE.ui.noResults)}</p>`;
     const rows = items
         .map((item) => {
             const avHtml = highlightMatch(item.av, item.avNorm, queryNorm);
@@ -134,7 +146,7 @@ function renderRows(items, dict, queryNorm, reversed) {
                 <div class="phrase-row">
                     <div class="phrase-cell phrase-cell-a">${leftHtml}</div>
                     <div class="phrase-cell phrase-cell-b">${rightHtml}</div>
-                    <a class="phrase-link" href="${wordLink(item.w, dict)}" title="Открыть статью «${escapeHtml(item.w)}»">${escapeHtml(item.w)}</a>
+                    <a class="phrase-link" href="${wordLink(item.w, dict)}" title="${escapeHtml(formatTpl(SITE.ui.openArticleTpl, { word: item.w }))}">${escapeHtml(item.w)}</a>
                     ${commentHtml}
                 </div>
             `;
@@ -152,13 +164,13 @@ function renderSection(containerId, index, dict, queryNorm, reversed, leftLabel,
     const { results, total } = searchPhrases(index, queryNorm, CONFIG.MAX_RESULTS);
     const caption =
         total > CONFIG.MAX_RESULTS
-            ? `Найдено ${total} · показаны первые ${CONFIG.MAX_RESULTS}`
-            : `Найдено ${total}`;
+            ? formatTpl(SITE.ui.foundMoreTpl, { n: total, max: CONFIG.MAX_RESULTS })
+            : formatTpl(SITE.ui.foundTpl, { n: total });
     const header = `
         <div class="phrase-header-row">
             <div>${escapeHtml(leftLabel)}</div>
             <div>${escapeHtml(rightLabel)}</div>
-            <div>Слово</div>
+            <div>${escapeHtml(SITE.ui.wordCol)}</div>
         </div>
     `;
     container.innerHTML = `<p class="phrase-table-caption">${caption}</p>${header}${renderRows(results, dict, queryNorm, reversed)}`;
@@ -187,7 +199,7 @@ function runSearch(query) {
     const statsEl = document.getElementById('phraseStats');
     if (!query || query.length < CONFIG.MIN_QUERY_LEN) {
         renderEmptyState();
-        if (query) statsEl.textContent = `Введите ещё ${CONFIG.MIN_QUERY_LEN - query.length} симв.`;
+        if (query) statsEl.textContent = formatTpl(SITE.ui.enterMoreCharsTpl, { n: CONFIG.MIN_QUERY_LEN - query.length });
         return;
     }
     statsEl.textContent = '';

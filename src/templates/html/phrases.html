@@ -3,17 +3,17 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <meta name="description" content="Поиск по фразам и примерам — __SITE_DESC__, __SITE_HOST__">
+    <meta name="description" content="__UI_PHRASES_DESC__ — __SITE_DESC__, __SITE_HOST__">
     <meta name="keywords" content="аварский язык, словарь, фразы, примеры, Дагестан">
     <meta name="author" content="__SITE_HOST__">
 
     <!-- Open Graph / Social Media -->
     <meta property="og:type" content="website">
-    <meta property="og:title" content="Поиск по фразам — __SITE_HOST__">
+    <meta property="og:title" content="__UI_PHRASES_TITLE__ — __SITE_HOST__">
     <meta property="og:description" content="Полнотекстовый поиск по примерам — __SITE_DESC__">
     <meta property="og:url" content="https://__SITE_HOST__/phrases.html">
 
-    <title>Поиск по фразам — __SITE_HOST__</title>
+    <title>__UI_PHRASES_TITLE__ — __SITE_HOST__</title>
 
     <!-- Google Fonts (из index.avar.me) -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -70,8 +70,8 @@
 
         <!-- Header -->
         <header class="header">
-            <p class="header-tag">Поиск по фразам</p>
-            <p class="phrases-subtitle">Ищет текст внутри примеров и переводов — не только заглавные слова</p>
+            <p class="header-tag">__UI_PHRASES_TITLE__</p>
+            <p class="phrases-subtitle">__UI_PHRASES_SUBTITLE__</p>
             <p class="header-link">
                 <a class="back-search-btn" href="index.html">← Обычный поиск</a>
             </p>
@@ -88,13 +88,13 @@
                         type="text"
                         id="phraseSearchInput"
                         class="search-input"
-                        placeholder="Слово или часть фразы…"
+                        placeholder="__UI_PHRASES_PLACEHOLDER__"
                         autocomplete="off"
                         autocorrect="off"
                         autocapitalize="off"
                         spellcheck="false"
                     >
-                    <button id="phraseClearBtn" class="clear-btn" aria-label="Очистить">
+                    <button id="phraseClearBtn" class="clear-btn" aria-label="__UI_CLEAR__">
                         <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
                             <path d="M12 4L4 12M4 4l8 8" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
                         </svg>
@@ -120,7 +120,7 @@
         <!-- Loading Indicator -->
         <div id="phraseLoading" class="loading">
             <div class="spinner"></div>
-            <p>Загрузка фраз…</p>
+            <p>__UI_PHRASES_LOADING__</p>
         </div>
 
         <!-- Error Message -->

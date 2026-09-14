@@ -23,11 +23,25 @@ function getSite() {
             seeAlso: 'См. также',
             exclamation: 'Восклицательная форма',
             genderHints: ['м. р.', 'ж. р.', 'ср. р.'],
+            searchPlaceholder: 'Введите слово для поиска…',
+            clear: 'Очистить',
+            loading: 'Загрузка…',
+            wordCol: 'Слово',
+            translationCol: 'Перевод',
+            noResults: 'Ничего не найдено',
+            tryDifferentQuery: 'Попробуйте изменить запрос',
+            noResultsForTpl: 'Ничего не найдено для "{query}"',
+            wordsStartingWithMoreTpl: 'Слова на «{query}» (показаны первые {n})',
+            wordsStartingWithTpl: 'Слова на «{query}» — {n}',
         },
     };
 }
 
 const SITE = getSite();
+
+function formatTpl(tpl, vars) {
+    return tpl.replace(/\{(\w+)\}/g, (m, key) => (key in vars ? vars[key] : m));
+}
 
 const CONFIG = {
     MAX_SUGGESTIONS: 20,
@@ -712,8 +726,8 @@ function renderNotFound() {
                 <circle cx="24" cy="24" r="20" stroke="currentColor" stroke-width="2"/>
                 <path d="M24 16v12M24 32v.5" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
             </svg>
-            <p>Ничего не найдено</p>
-            <p class="no-results-hint">Попробуйте изменить запрос</p>
+            <p>${escapeHtml(SITE.ui.noResults)}</p>
+            <p class="no-results-hint">${escapeHtml(SITE.ui.tryDifferentQuery)}</p>
         </div>
     `;
     resultsEl.style.display = 'block';
@@ -779,9 +793,9 @@ function renderWordListTable(words, options = {}) {
             <table class="word-list">
                 <thead>
                     <tr>
-                        <th>Слово</th>
-                        <th>Формы</th>
-                        <th>Перевод</th>
+                        <th>${escapeHtml(SITE.ui.wordCol)}</th>
+                        <th>${escapeHtml(SITE.ui.forms)}</th>
+                        <th>${escapeHtml(SITE.ui.translationCol)}</th>
                     </tr>
                 </thead>
                 <tbody>${rows}</tbody>
@@ -798,8 +812,8 @@ function renderPrefixList(query, headwords) {
     const randomSection = document.getElementById('randomWordsSection');
     const caption =
         headwords.length >= CONFIG.MAX_PREFIX_LIST
-            ? `Слова на «${query}» (показаны первые ${CONFIG.MAX_PREFIX_LIST})`
-            : `Слова на «${query}» — ${headwords.length}`;
+            ? formatTpl(SITE.ui.wordsStartingWithMoreTpl, { query, n: CONFIG.MAX_PREFIX_LIST })
+            : formatTpl(SITE.ui.wordsStartingWithTpl, { query, n: headwords.length });
 
     resultsEl.innerHTML = renderWordListTable(headwords, { caption });
     resultsEl.style.display = 'block';
@@ -869,7 +883,7 @@ function updateSearchStats(query, resultsCount) {
     }
     
     if (resultsCount === 0) {
-        statsEl.textContent = `Ничего не найдено для "${query}"`;
+        statsEl.textContent = formatTpl(SITE.ui.noResultsForTpl, { query });
     } else {
         statsEl.textContent = '';
     }
