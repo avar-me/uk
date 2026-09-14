@@ -134,21 +134,60 @@ def _filter_lookup_against_relations(lookup: list[str], results: list[dict]) -> 
     return out
 
 
-# Mapping of sense relation fields → Russian display labels
-_RELATION_FIELDS: list[tuple[str, str]] = [
-    ("masdarfrom",    "масдар от"),
-    ("masdarforceto", "масдар понуд. к"),
-    ("genitivefrom",  "род. пад. от"),
-    ("pluralfor",     "мн. ч. от"),
-    ("forceto",       "понуд. к"),
-    ("participlefrom","прич. от"),
-    ("deverbfrom",    "девербатив от"),
-    ("locativefrom",  "мест. пад. от"),
-    ("dativefrom",    "дат. пад. от"),
-    ("ergativefrom",  "эрг. пад. от"),
-    ("casefrom",      "пад. от"),
-    ("ablativefrom",  "отл. пад. от"),
-]
+# Mapping of sense relation fields → display labels per target language,
+# с фоллбэком на ru, если для языка нет перевода.
+_RELATION_LABELS: dict[str, dict[str, str]] = {
+    "masdarfrom": {
+        "ru": "масдар от", "en": "masdar of", "de": "Masdar von",
+        "fr": "masdar de", "tr": "masdar biçimi", "uk": "масдар від", "be": "масдар ад",
+    },
+    "masdarforceto": {
+        "ru": "масдар понуд. к", "en": "causative masdar of", "de": "kausativer Masdar von",
+        "fr": "masdar causatif de", "tr": "ettirgen masdar biçimi",
+        "uk": "каузативний масдар від", "be": "каўзатыўны масдар ад",
+    },
+    "genitivefrom": {
+        "ru": "род. пад. от", "en": "genitive of", "de": "Genitiv von",
+        "fr": "génitif de", "tr": "iyelik hâli", "uk": "родовий відмінок від", "be": "родны склон ад",
+    },
+    "pluralfor": {
+        "ru": "мн. ч. от", "en": "plural of", "de": "Plural von",
+        "fr": "pluriel de", "tr": "çoğul biçimi", "uk": "множина від", "be": "множны лік ад",
+    },
+    "forceto": {
+        "ru": "понуд. к", "en": "causative of", "de": "Kausativ von",
+        "fr": "causatif de", "tr": "ettirgen çatı biçimi",
+        "uk": "каузативна форма від", "be": "каўзатыўная форма ад",
+    },
+    "participlefrom": {
+        "ru": "прич. от", "en": "participle of", "de": "Partizip von",
+        "fr": "participe de", "tr": "ortaç biçimi", "uk": "дієприкметник від", "be": "дзеепрыметнік ад",
+    },
+    "deverbfrom": {
+        "ru": "девербатив от", "en": "deverbative of", "de": "Deverbativ von",
+        "fr": "déverbatif de", "tr": "ulaç biçimi", "uk": "дієприслівник від", "be": "дзеепрыслоўе ад",
+    },
+    "locativefrom": {
+        "ru": "мест. пад. от", "en": "locative of", "de": "Lokativ von",
+        "fr": "locatif de", "tr": "bulunma hâli", "uk": "місцевий відмінок від", "be": "месны склон ад",
+    },
+    "dativefrom": {
+        "ru": "дат. пад. от", "en": "dative of", "de": "Dativ von",
+        "fr": "datif de", "tr": "yönelme hâli", "uk": "давальний відмінок від", "be": "давальны склон ад",
+    },
+    "ergativefrom": {
+        "ru": "эрг. пад. от", "en": "ergative of", "de": "Ergativ von",
+        "fr": "ergatif de", "tr": "etken hâl", "uk": "ергативний відмінок від", "be": "эргатыўны склон ад",
+    },
+    "casefrom": {
+        "ru": "пад. от", "en": "case form of", "de": "Kasusform von",
+        "fr": "forme casuelle de", "tr": "hâl biçimi", "uk": "відмінкова форма від", "be": "склонавая форма ад",
+    },
+    "ablativefrom": {
+        "ru": "отл. пад. от", "en": "ablative of", "de": "Ablativ von",
+        "fr": "ablatif de", "tr": "çıkma hâli", "uk": "віддільний відмінок від", "be": "выходны склон ад",
+    },
+}
 
 
 def _sense_to_result(
@@ -196,12 +235,13 @@ def _sense_to_result(
 
     # Relations: masdarfrom, genitivefrom, pluralfor, forceto, etc.
     relations_out: list[dict] = []
-    for field, label in _RELATION_FIELDS:
+    for field, labels_by_lang in _RELATION_LABELS.items():
         val = sense.get(field)
         if not val:
             continue
         target = str(val).strip()
         if target:
+            label = labels_by_lang.get(lang, labels_by_lang["ru"])
             relations_out.append({"kind": label, "target": target})
 
     sense_forms = sense.get("forms") or []

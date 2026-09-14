@@ -8,5 +8,6 @@
   "title_av_xx": "Avarca–Türkçe sözlük",
   "title_xx_av": "Türkçe–Avarca sözlük",
   "description": "Avarca–Türkçe ve Türkçe–Avarca sözlük",
-  "header_tag": "Avar sözlüğü"
+  "header_tag": "Avar sözlüğü",
+  "stage": "experimental"
 }

@@ -8,5 +8,6 @@
   "title_av_xx": "Avar–English dictionary",
   "title_xx_av": "English–Avar dictionary",
   "description": "Avar–English and English–Avar dictionary",
-  "header_tag": "Avar dictionary"
+  "header_tag": "Avar dictionary",
+  "stage": "experimental"
 }

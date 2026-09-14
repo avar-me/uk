@@ -15,6 +15,60 @@ from pathlib import Path
 REPO_ROOT = Path(__file__).resolve().parents[1]
 PROFILES_DIR = Path(__file__).resolve().parent / "profiles"
 
+# Мелкие UI-указатели в app.js/tma/app.js ("Формы:", "См. также:", …),
+# инжектятся в window.__SITE__.ui — см. site_payload().
+UI_STRINGS: dict[str, dict[str, object]] = {
+    "ru": {
+        "forms": "Формы",
+        "byGender": "По родам",
+        "seeAlso": "См. также",
+        "exclamation": "Восклицательная форма",
+        "genderHints": ["м. р.", "ж. р.", "ср. р."],
+    },
+    "en": {
+        "forms": "Forms",
+        "byGender": "By gender",
+        "seeAlso": "See also",
+        "exclamation": "Exclamatory form",
+        "genderHints": ["m.", "f.", "n."],
+    },
+    "de": {
+        "forms": "Formen",
+        "byGender": "Nach Genus",
+        "seeAlso": "Siehe auch",
+        "exclamation": "Ausrufeform",
+        "genderHints": ["m.", "f.", "n."],
+    },
+    "fr": {
+        "forms": "Formes",
+        "byGender": "Par genre",
+        "seeAlso": "Voir aussi",
+        "exclamation": "Forme exclamative",
+        "genderHints": ["m.", "f.", "n."],
+    },
+    "tr": {
+        "forms": "Biçimler",
+        "byGender": "Cinsiyete göre",
+        "seeAlso": "Ayrıca bakınız",
+        "exclamation": "Ünlem biçimi",
+        "genderHints": ["er.", "di.", "nö."],
+    },
+    "uk": {
+        "forms": "Форми",
+        "byGender": "За родом",
+        "seeAlso": "Див. також",
+        "exclamation": "Оклична форма",
+        "genderHints": ["ч. р.", "ж. р.", "с. р."],
+    },
+    "be": {
+        "forms": "Формы",
+        "byGender": "Па родах",
+        "seeAlso": "Гл. таксама",
+        "exclamation": "Клічная форма",
+        "genderHints": ["м. р.", "ж. р.", "н. р."],
+    },
+}
+
 
 def _hex_rgb(color: str) -> tuple[int, int, int]:
     h = color.removeprefix("#")
@@ -70,6 +124,7 @@ def load_site(root: Path | None = None) -> dict:
         "title_xx_av": profile["title_xx_av"],
         "description": profile["description"],
         "header_tag": profile["header_tag"],
+        "stage": profile.get("stage", "experimental"),
         "dict_av": dict_av,
         "dict_xx": dict_xx,
         "dicts": [dict_av, dict_xx],
@@ -99,6 +154,7 @@ def site_payload(site: dict) -> dict:
                 "avFirst": False,
             },
         ],
+        "ui": UI_STRINGS.get(site["target"], UI_STRINGS["ru"]),
     }
 
 
@@ -134,6 +190,7 @@ def placeholders(site: dict, build_id: str) -> dict[str, str]:
         "__SITE_DESC__": site["description"],
         "__SITE_HOST__": site["host"],
         "__SITE_TAG__": site["header_tag"],
+        "__SITE_STAGE__": site["stage"],
     }
 
 

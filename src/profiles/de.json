@@ -8,5 +8,6 @@
   "title_av_xx": "Awarisch–Deutsches Wörterbuch",
   "title_xx_av": "Deutsch–Awarisches Wörterbuch",
   "description": "Awarisch–Deutsches und Deutsch–Awarisches Wörterbuch",
-  "header_tag": "Awarisches Wörterbuch"
+  "header_tag": "Awarisches Wörterbuch",
+  "stage": "experimental"
 }

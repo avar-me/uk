@@ -17,6 +17,13 @@ function getSite() {
             { id: 'av-ru', label: 'Авар → Рус', title: 'Аварско-русский словарь — dev.avar.me', shortAv: 'Авар', shortXx: 'Рус', avFirst: true },
             { id: 'ru-av', label: 'Рус → Авар', title: 'Русско-аварский словарь — dev.avar.me', shortAv: 'Авар', shortXx: 'Рус', avFirst: false },
         ],
+        ui: {
+            forms: 'Формы',
+            byGender: 'По родам',
+            seeAlso: 'См. также',
+            exclamation: 'Восклицательная форма',
+            genderHints: ['м. р.', 'ж. р.', 'ср. р.'],
+        },
     };
 }
 
@@ -94,7 +101,7 @@ function filterDisplayLabels(labels) {
     return (labels || []).filter(l => l && !isHomonymLabel(l));
 }
 
-const GENDER_FORM_HINTS = ['м. р.', 'ж. р.', 'ср. р.'];
+const GENDER_FORM_HINTS = SITE.ui.genderHints;
 
 const VOWEL_RE = /[аеёиоуыэюяӀӏ]/iu;
 
@@ -556,12 +563,12 @@ function renderWordCard(wordData) {
     html += `<div class="word-title-row">`;
     html += `<h2 class="word-title">${escapeHtml(wordData.word)}</h2>`;
     if (wordData.exclamation) {
-        html += `<span class="word-excl" title="Восклицательная форма">${escapeHtml(wordData.exclamation)}</span>`;
+        html += `<span class="word-excl" title="${escapeHtml(SITE.ui.exclamation)}">${escapeHtml(wordData.exclamation)}</span>`;
     }
     html += `</div>`;
     if (wordData.gender_forms && wordData.gender_forms.length > 0) {
         html += '<div class="word-gender-forms">';
-        html += '<span class="forms-label">По родам:</span> ';
+        html += `<span class="forms-label">${escapeHtml(SITE.ui.byGender)}:</span> `;
         html += wordData.gender_forms
             .map((form, i) => {
                 const hint = GENDER_FORM_HINTS[i] || '';
@@ -604,7 +611,7 @@ function renderWordCard(wordData) {
             // Forms (формы слова)
             if (result.forms && result.forms.length > 0) {
                 html += '<div class="result-forms">';
-                html += '<span class="forms-label">Формы:</span> ';
+                html += `<span class="forms-label">${escapeHtml(SITE.ui.forms)}:</span> `;
                 html += result.forms
                     .map(form => {
                         const inner = formatFormDisplay(
@@ -652,7 +659,7 @@ function renderWordCard(wordData) {
             // Lookup (связанные слова)
             if (result.lookup && result.lookup.length > 0) {
                 html += '<div class="result-lookup">';
-                html += '<span class="lookup-label">См. также:</span> ';
+                html += `<span class="lookup-label">${escapeHtml(SITE.ui.seeAlso)}:</span> `;
                 html += result.lookup
                     .map(word => `<span class="lookup-link" data-word="${escapeHtml(word)}">${escapeHtml(word)}</span>`)
                     .join(', ');

@@ -78,6 +78,14 @@ const CONFIG = {
     DEFAULT_DICT_TYPE: (typeof window !== 'undefined' && window.__SITE__ && window.__SITE__.dicts && window.__SITE__.dicts[0].id) || 'av-ru'
 };
 
+const SITE_UI = (typeof window !== 'undefined' && window.__SITE__ && window.__SITE__.ui) || {
+    forms: 'Формы',
+    byGender: 'По родам',
+    seeAlso: 'См. также',
+    exclamation: 'Восклицательная форма',
+    genderHints: ['м. р.', 'ж. р.', 'ср. р.'],
+};
+
 // ============================================================================
 // STATE MANAGEMENT
 // ============================================================================
@@ -118,7 +126,7 @@ function filterDisplayLabels(labels) {
     return (labels || []).filter(l => l && !isHomonymLabel(l));
 }
 
-const GENDER_FORM_HINTS = ['м. р.', 'ж. р.', 'ср. р.'];
+const GENDER_FORM_HINTS = SITE_UI.genderHints;
 
 const VOWEL_RE = /[аеёиоуыэюяӀӏ]/iu;
 
@@ -397,12 +405,12 @@ function renderWordCard(wordData) {
     html += `<div class="word-title-row">`;
     html += `<h2 class="word-title">${escapeHtml(wordData.word)}</h2>`;
     if (wordData.exclamation) {
-        html += `<span class="word-excl" title="Восклицательная форма">${escapeHtml(wordData.exclamation)}</span>`;
+        html += `<span class="word-excl" title="${escapeHtml(SITE_UI.exclamation)}">${escapeHtml(wordData.exclamation)}</span>`;
     }
     html += `</div>`;
     if (wordData.gender_forms && wordData.gender_forms.length > 0) {
         html += '<div class="word-gender-forms">';
-        html += '<span class="forms-label">По родам:</span> ';
+        html += `<span class="forms-label">${escapeHtml(SITE_UI.byGender)}:</span> `;
         html += wordData.gender_forms
             .map((form, i) => {
                 const hint = GENDER_FORM_HINTS[i] || '';
@@ -440,7 +448,7 @@ function renderWordCard(wordData) {
             
             if (result.forms && result.forms.length > 0) {
                 html += '<div class="result-forms">';
-                html += '<span class="forms-label">Формы:</span> ';
+                html += `<span class="forms-label">${escapeHtml(SITE_UI.forms)}:</span> `;
                 html += result.forms
                     .map(form => {
                         const inner = formatFormDisplay(
@@ -484,7 +492,7 @@ function renderWordCard(wordData) {
             
             if (result.lookup && result.lookup.length > 0) {
                 html += '<div class="result-lookup">';
-                html += '<span class="lookup-label">См. также:</span> ';
+                html += `<span class="lookup-label">${escapeHtml(SITE_UI.seeAlso)}:</span> `;
                 html += result.lookup
                     .map(word => `<span class="lookup-link" data-word="${escapeHtml(word)}">${escapeHtml(word)}</span>`)
                     .join(', ');

@@ -8,5 +8,6 @@
   "title_av_xx": "Dictionnaire avar–français",
   "title_xx_av": "Dictionnaire français–avar",
   "description": "Dictionnaire avar–français et français–avar",
-  "header_tag": "Dictionnaire avar"
+  "header_tag": "Dictionnaire avar",
+  "stage": "experimental"
 }
