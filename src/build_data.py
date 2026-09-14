@@ -205,13 +205,11 @@ def _sense_to_result(
     comment_clean = (
         _clean_comment_for_site(str(comment_raw).strip()) if comment_raw else ""
     )
-    # Основной перевод — поле text; комментарий — отдельно (без склейки в одну «простыню»).
-    if text:
-        translation = text
-        comment_out = comment_clean or None
-    else:
-        translation = comment_clean
-        comment_out = None
+    # Основной перевод — только поле text; comment — всегда отдельная сноска,
+    # а не замена перевода (иначе грамматическая помета типа «родительный
+    # падеж» выглядит как перевод слова).
+    translation = text
+    comment_out = comment_clean or None
 
     # precomment — помета перед переводом (курсив, мельче)
     precomment = (sense.get("precomment") or "").strip() or None
