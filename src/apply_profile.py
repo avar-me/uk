@@ -44,6 +44,7 @@ UI_STRINGS: dict[str, dict[str, object]] = {
         "foundTpl": "Найдено {n}",
         "enterMoreCharsTpl": "Введите ещё {n} симв.",
         "openArticleTpl": "Открыть статью «{word}»",
+        "backSearch": "← Обычный поиск",
     },
     "en": {
         "forms": "Forms",
@@ -71,6 +72,7 @@ UI_STRINGS: dict[str, dict[str, object]] = {
         "foundTpl": "Found {n}",
         "enterMoreCharsTpl": "Enter {n} more character(s)",
         "openArticleTpl": 'Open entry "{word}"',
+        "backSearch": "← Regular search",
     },
     "de": {
         "forms": "Formen",
@@ -98,6 +100,7 @@ UI_STRINGS: dict[str, dict[str, object]] = {
         "foundTpl": "{n} gefunden",
         "enterMoreCharsTpl": "Noch {n} Zeichen eingeben",
         "openArticleTpl": 'Eintrag "{word}" öffnen',
+        "backSearch": "← Normale Suche",
     },
     "fr": {
         "forms": "Formes",
@@ -125,6 +128,7 @@ UI_STRINGS: dict[str, dict[str, object]] = {
         "foundTpl": "{n} trouvés",
         "enterMoreCharsTpl": "Entrez encore {n} caractère(s)",
         "openArticleTpl": "Ouvrir l'entrée \"{word}\"",
+        "backSearch": "← Recherche normale",
     },
     "tr": {
         "forms": "Biçimler",
@@ -152,6 +156,7 @@ UI_STRINGS: dict[str, dict[str, object]] = {
         "foundTpl": "{n} bulundu",
         "enterMoreCharsTpl": "{n} karakter daha girin",
         "openArticleTpl": '"{word}" girişini aç',
+        "backSearch": "← Normal arama",
     },
     "uk": {
         "forms": "Форми",
@@ -179,6 +184,7 @@ UI_STRINGS: dict[str, dict[str, object]] = {
         "foundTpl": "Знайдено {n}",
         "enterMoreCharsTpl": "Введіть ще {n} символ(ів)",
         "openArticleTpl": "Відкрити статтю «{word}»",
+        "backSearch": "← Звичайний пошук",
     },
     "be": {
         "forms": "Формы",
@@ -206,6 +212,7 @@ UI_STRINGS: dict[str, dict[str, object]] = {
         "foundTpl": "Знойдзена {n}",
         "enterMoreCharsTpl": "Увядзіце яшчэ {n} сімвал(аў)",
         "openArticleTpl": "Адкрыць артыкул «{word}»",
+        "backSearch": "← Звычайны пошук",
     },
 }
 
@@ -341,6 +348,7 @@ def placeholders(site: dict, build_id: str) -> dict[str, str]:
         "__UI_PHRASES_SUBTITLE__": site["ui"]["phrasesSubtitle"],
         "__UI_PHRASES_PLACEHOLDER__": site["ui"]["phrasesPlaceholder"],
         "__UI_PHRASES_LOADING__": site["ui"]["phrasesLoading"],
+        "__UI_BACK_SEARCH__": site["ui"]["backSearch"],
     }
 
 
