@@ -20,6 +20,7 @@ PROFILES_DIR = Path(__file__).resolve().parent / "profiles"
 UI_STRINGS: dict[str, dict[str, object]] = {
     "ru": {
         "forms": "Формы",
+        "spellingForms": "Варианты написания",
         "byGender": "По родам",
         "seeAlso": "См. также",
         "exclamation": "Восклицательная форма",
@@ -48,6 +49,7 @@ UI_STRINGS: dict[str, dict[str, object]] = {
     },
     "en": {
         "forms": "Forms",
+        "spellingForms": "Spelling variants",
         "byGender": "By gender",
         "seeAlso": "See also",
         "exclamation": "Exclamatory form",
@@ -76,6 +78,7 @@ UI_STRINGS: dict[str, dict[str, object]] = {
     },
     "de": {
         "forms": "Formen",
+        "spellingForms": "Schreibvarianten",
         "byGender": "Nach Genus",
         "seeAlso": "Siehe auch",
         "exclamation": "Ausrufeform",
@@ -104,6 +107,7 @@ UI_STRINGS: dict[str, dict[str, object]] = {
     },
     "fr": {
         "forms": "Formes",
+        "spellingForms": "Variantes orthographiques",
         "byGender": "Par genre",
         "seeAlso": "Voir aussi",
         "exclamation": "Forme exclamative",
@@ -132,6 +136,7 @@ UI_STRINGS: dict[str, dict[str, object]] = {
     },
     "tr": {
         "forms": "Biçimler",
+        "spellingForms": "Yazım biçimleri",
         "byGender": "Cinsiyete göre",
         "seeAlso": "Ayrıca bakınız",
         "exclamation": "Ünlem biçimi",
@@ -160,6 +165,7 @@ UI_STRINGS: dict[str, dict[str, object]] = {
     },
     "uk": {
         "forms": "Форми",
+        "spellingForms": "Варіанти написання",
         "byGender": "За родом",
         "seeAlso": "Див. також",
         "exclamation": "Оклична форма",
@@ -188,6 +194,7 @@ UI_STRINGS: dict[str, dict[str, object]] = {
     },
     "be": {
         "forms": "Формы",
+        "spellingForms": "Варыянты напісання",
         "byGender": "Па родах",
         "seeAlso": "Гл. таксама",
         "exclamation": "Клічная форма",

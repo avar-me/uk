@@ -365,13 +365,14 @@ async function getWordData(word, dictType) {
     }
     
     const chunkData = await loadChunk(dictType, chunkFile);
-    
-    // chunkData is an object with words as keys: {word: entry, ...}
+
+    // chunkData is an object with words as keys: {word: [entry, ...], ...}
+    // (список — на одно word может быть несколько омонимов)
     // Try direct lookup first
     if (chunkData[word]) {
         return chunkData[word];
     }
-    
+
     // Fallback: case-insensitive search
     const wordNorm = normalizeWord(word);
     for (const [key, entry] of Object.entries(chunkData)) {
@@ -379,7 +380,7 @@ async function getWordData(word, dictType) {
             return entry;
         }
     }
-    
+
     return null;
 }
 
@@ -672,11 +673,11 @@ async function loadAndDisplayWord(word) {
         showLoading(true);
         
         const wordData = await getWordData(word, state.currentDictType);
-        
+
         showLoading(false);
-        
-        if (wordData) {
-            renderResults([wordData]);
+
+        if (wordData && wordData.length) {
+            renderResults(wordData);
             updateSearchStats(word, 1);
             hapticFeedback('success');
         } else {

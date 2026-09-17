@@ -143,7 +143,7 @@ function stressVowelIndex(word, stress) {
     return -1;
 }
 
-function formatWordWithStress(word, stress, applyStress = true) {
+function formatWordWithStress(word, stress, applyStress = true, asForm = false) {
     if (!word) return '';
     if (!applyStress || stress == null) return escapeHtml(word);
 
@@ -151,10 +151,12 @@ function formatWordWithStress(word, stress, applyStress = true) {
     const si = stressVowelIndex(word, stress);
     if (si < 0) return escapeHtml(word);
 
+    const cls = asForm ? 'stress-vowel-form' : 'stress-vowel';
+    const accent = asForm ? '' : '́';
     let html = '';
     for (let i = 0; i < chars.length; i++) {
         if (i === si) {
-            html += `<span class="stress-vowel">${escapeHtml(chars[i])}</span>`;
+            html += `<span class="${cls}">${escapeHtml(chars[i])}${accent}</span>`;
         } else {
             html += escapeHtml(chars[i]);
         }
@@ -216,16 +218,34 @@ function exampleRuParts(ex) {
     return { ru, note: null };
 }
 
+/** Часть слова (стем или суффикс) с ударной гласной по её позиции в целом слове. */
+function formatPartWithStress(part, offset, stressIdx) {
+    if (stressIdx < 0) return escapeHtml(part);
+    const chars = [...part];
+    let html = '';
+    for (let i = 0; i < chars.length; i++) {
+        if (offset + i === stressIdx) {
+            html += `<span class="stress-vowel-form">${escapeHtml(chars[i])}</span>`;
+        } else {
+            html += escapeHtml(chars[i]);
+        }
+    }
+    return html;
+}
+
 function formatFormDisplay(form, headword, stem, stress) {
     const showStress = headword && normalizeWord(form) === normalizeWord(headword);
     const parts = splitStemSuffix(form, stem);
     if (parts) {
+        // Индекс ударной гласной считаем по всему слову — она может попасть
+        // и на суффикс (напр. стем "б" + суффикс "ахьи" с ударением на 2-й букве).
+        const si = showStress ? stressVowelIndex(form, stress) : -1;
         return (
-            `<span class="form-stem">${formatWordWithStress(parts.stem, stress, showStress)}</span>` +
-            `<span class="form-suffix">${escapeHtml(parts.suffix)}</span>`
+            `<span class="form-stem">${formatPartWithStress(parts.stem, 0, si)}</span>` +
+            `<span class="form-suffix">${formatPartWithStress(parts.suffix, parts.stem.length, si)}</span>`
         );
     }
-    return formatWordWithStress(form, stress, showStress);
+    return formatWordWithStress(form, stress, showStress, true);
 }
 
 /**
@@ -529,13 +549,15 @@ async function getWordData(word, dictType) {
     }
     
     const chunkData = await loadChunk(dictType, chunkFile);
-    
-    // chunkData is an object with words as keys: {word: entry, ...}
+
+    // chunkData is an object with words as keys: {word: [entry, ...], ...}
+    // (список — на одно word может быть несколько омонимов, каждый рендерится
+    // отдельной карточкой)
     // Try direct lookup first
     if (chunkData[word]) {
         return chunkData[word];
     }
-    
+
     // Fallback: case-insensitive search
     const wordNorm = normalizeWord(word);
     for (const [key, entry] of Object.entries(chunkData)) {
@@ -543,7 +565,7 @@ async function getWordData(word, dictType) {
             return entry;
         }
     }
-    
+
     return null;
 }
 
@@ -582,7 +604,7 @@ function renderWordCard(wordData) {
     // Header
     html += `<div class="word-header">`;
     html += `<div class="word-title-row">`;
-    html += `<h2 class="word-title">${escapeHtml(wordData.word)}</h2>`;
+    html += `<h2 class="word-title">${formatWordWithStress(wordData.word, wordData.stress)}</h2>`;
     if (wordData.exclamation) {
         html += `<span class="word-excl" title="${escapeHtml(SITE.ui.exclamation)}">${escapeHtml(wordData.exclamation)}</span>`;
     }
@@ -596,6 +618,14 @@ function renderWordCard(wordData) {
                 const titleAttr = hint ? ` title="${escapeHtml(hint)}"` : '';
                 return `<span class="form-chip gender-form-chip lookup-link" data-word="${escapeHtml(form)}"${titleAttr}>${escapeHtml(form)}</span>`;
             })
+            .join(' ');
+        html += '</div>';
+    }
+    if (wordData.spelling_forms && wordData.spelling_forms.length > 0) {
+        html += '<div class="word-spelling-forms">';
+        html += `<span class="forms-label">${escapeHtml(SITE.ui.spellingForms)}:</span> `;
+        html += wordData.spelling_forms
+            .map(form => `<span class="form-chip lookup-link" data-word="${escapeHtml(form)}">${escapeHtml(form)}</span>`)
             .join(' ');
         html += '</div>';
     }
@@ -636,7 +666,7 @@ function renderWordCard(wordData) {
                 html += result.forms
                     .map(form => {
                         const inner = formatFormDisplay(
-                            form, wordData.word, wordData.stem, wordData.stress
+                            form, wordData.word, result.stem, result.stress
                         );
                         return `<span class="form-chip">${inner}</span>`;
                     })
@@ -934,9 +964,9 @@ const handleSearchInput = debounce(async (query) => {
     } catch (err) {
         console.warn('Chunk lookup:', err);
     }
-    if (chunkHit) {
+    if (chunkHit && chunkHit.length) {
         showLoading(false);
-        renderResults([chunkHit]);
+        renderResults(chunkHit);
         window.location.hash = `word=${encodeURIComponent(wordForUrl(query))}`;
         updateSearchStats('', 0);
         return;
@@ -968,8 +998,8 @@ async function loadAndDisplayWord(word) {
         
         showLoading(false);
         
-        if (wordData) {
-            renderResults([wordData]);
+        if (wordData && wordData.length) {
+            renderResults(wordData);
             updateSearchStats(word, 1);
             const urlWord = wordForUrl(word);
             window.location.hash = `word=${encodeURIComponent(urlWord)}`;

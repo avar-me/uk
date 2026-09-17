@@ -581,6 +581,10 @@ a:hover {
 }
 
 .stress-vowel {
+  font-weight: inherit;
+}
+
+.stress-vowel-form {
   color: var(--accent);
   font-weight: 650;
   text-decoration: underline;
@@ -637,6 +641,17 @@ a:hover {
 
 .gender-form-chip {
   cursor: pointer;
+}
+
+.word-spelling-forms {
+  margin-top: 0.75rem;
+  font-size: 0.9rem;
+  line-height: 1.6;
+}
+
+.word-spelling-forms .forms-label {
+  font-weight: 600;
+  color: var(--text-muted);
 }
 
 /* ============================================================================
