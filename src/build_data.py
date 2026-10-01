@@ -675,12 +675,13 @@ def build_phrases(dictionary_path: Path, direction: str, output_dir: Path) -> No
                 if not isinstance(sense, dict):
                     continue
                 text = (sense.get("text") or "").strip()
-                if text:
+                comment = _clean_comment_for_site(sense.get("comment") or "")
+                if text or comment:
                     word_has_phrase = True
                     if av_first:
-                        phrases.append([word, word, text, ""])
+                        phrases.append([word, word, text, comment])
                     else:
-                        phrases.append([word, text, word, ""])
+                        phrases.append([word, text, word, comment])
                 for ex in sense.get("examples") or []:
                     av = (ex.get("av") or "").strip()
                     xx = (ex.get(target) or ex.get("ru") or "").strip()

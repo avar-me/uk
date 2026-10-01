@@ -118,7 +118,8 @@ async function loadPhraseSet(dictName) {
     return records.map(([w, av, ru, c]) => {
         const avNorm = normalizeText(av);
         const ruNorm = normalizeText(ru);
-        return { w, av, ru, c, avNorm, ruNorm, combined: avNorm + '' + ruNorm };
+        const cNorm = normalizeText(c || '');
+        return { w, av, ru, c, avNorm, ruNorm, cNorm, combined: avNorm + '' + ruNorm + '\u001f' + cNorm };
     });
 }
 
@@ -148,7 +149,7 @@ function renderRows(items, dict, queryNorm, reversed) {
             const ruHtml = highlightMatch(item.ru, item.ruNorm, queryNorm);
             const leftHtml = reversed ? ruHtml : avHtml;
             const rightHtml = reversed ? avHtml : ruHtml;
-            const commentHtml = item.c ? `<div class="phrase-comment">${escapeHtml(item.c)}</div>` : '';
+            const commentHtml = item.c ? `<div class="phrase-comment">${highlightMatch(item.c, item.cNorm, queryNorm)}</div>` : '';
             return `
                 <div class="phrase-row">
                     <div class="phrase-cell phrase-cell-a">${leftHtml}</div>
