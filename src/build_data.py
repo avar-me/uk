@@ -33,10 +33,13 @@ DEFAULT_DOCS = REPO_ROOT / "docs"
 
 def normalize_word(word: str) -> str:
     import re
+    import unicodedata
 
     normalized = word.lower().strip()
     # Согласовано с normalizeWord() в app.js и normalizeQuery()/normalizeText()
     # в phrases.js (поиск, ключи чанков, порядок сортировки индекса).
+    # Снять знак ударения (U+0301) — см. normalizeWord() в app.js.
+    normalized = unicodedata.normalize("NFC", unicodedata.normalize("NFD", normalized).replace("\u0301", ""))
     normalized = re.sub(r"[1IiｌlL|!ǀӀІ]", "ӏ", normalized)
     # ё печатают редко — «елка» должно находить «ёлка». Ё стоит вне основного
     # кириллического блока (U+0451, после «я»), поэтому это влияет и на

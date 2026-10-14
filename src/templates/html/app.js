@@ -353,6 +353,12 @@ function findExactWordInIndex(words, query) {
  */
 function normalizeWord(word) {
     let normalized = word.toLowerCase().trim();
+    // Снять знак ударения (U+0301, combining acute accent) — слова со
+    // вставленным ударением («щи́нкӏизабизе») должны находиться по обычному
+    // написанию («щинкӏизабизе»). NFD раскладывает составные буквы перед
+    // снятием акцента и NFC возвращает обратно; U+0301 отличен от U+0306
+    // (краткая, как в «й»), поэтому йотированные буквы не затрагиваются.
+    normalized = normalized.normalize('NFD').replace(/\u0301/g, '').normalize('NFC');
     // Replace all variants of stick (1, I, i, l, L, |, !, Ӏ) with ӏ (U+04CF)
     // Include both U+04C0 (Ӏ) and U+04CF (ӏ) for compatibility
     // Added: ! (exclamation), ǀ (latin letter dental click), various other pipe-like chars

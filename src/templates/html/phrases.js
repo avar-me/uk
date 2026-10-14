@@ -60,7 +60,9 @@ function escapeHtml(text) {
 
 /** Согласовано с normalizeWord() в app.js и normalize_word() в build_data.py. */
 function normalizeQuery(word) {
-    return word.toLowerCase().trim().replace(/[1IiｌlL|!ǀӀІ]/g, 'ӏ').replace(/ё/g, 'е');
+    return word.toLowerCase().trim()
+        .normalize('NFD').replace(/\u0301/g, '').normalize('NFC')
+        .replace(/[1IiｌlL|!ǀӀІ]/g, 'ӏ').replace(/ё/g, 'е');
 }
 
 /**
